@@ -1,9 +1,12 @@
 package com.pluralsight;
 
+import java.text.DecimalFormat;
+
 public class Vehicle {
     private String make,model,vehicleType,color;
     private int vin,year,odometer;
     private double price;
+    public static DecimalFormat df = new DecimalFormat("0.00");
 
     public Vehicle(int vin, int year, int odometer, double price, String make, String model, String vehicleType, String color) {
         this.vin = vin;
@@ -83,6 +86,6 @@ public class Vehicle {
     @Override
     public String toString() {
         return this.getVin() + "|" + this.getYear() + "|" + this.getMake() + "|" + this.getModel() + "|" + this.getVehicleType() + "|"
-                + this.getColor() + "|" + this.getOdometer() + "|" + this.getPrice();
+                + this.getColor() + "|" + this.getOdometer() + "|" + df.format(this.getPrice());
     }
 }
