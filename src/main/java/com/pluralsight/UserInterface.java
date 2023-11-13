@@ -2,10 +2,13 @@ package com.pluralsight;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class UserInterface {
     public static Scanner myScanner = new Scanner(System.in);
+    public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     public static void Display() throws IOException {
         int userInput;
@@ -40,7 +43,7 @@ public class UserInterface {
 
     }
 
-    public static void showDealership(Dealership dealerships) {
+    public static void showDealership(Dealership dealerships) throws IOException {
         int userInput;
 
         do {
@@ -55,6 +58,8 @@ public class UserInterface {
                     7) List all Vehicles
                     8) Add a vehicle
                     9) Remove a vehicle
+                    10) Buy a vehicle
+                    11) Lease a vehicle
                     99) Quit
                     """);
             userInput = myScanner.nextInt();
@@ -133,6 +138,55 @@ public class UserInterface {
                     } else {
                         System.out.println("Invalid option, returning to dealership screen!");
                     }
+                    break;
+                case 10:
+                    boolean isFinanced;
+                    String date,customerName,customerEmail,financeOption;
+                    date = LocalDate.now().format(dateTimeFormatter);
+                    System.out.println("Name");
+                    customerName = myScanner.nextLine();
+                    System.out.println("Email");
+                    customerEmail = myScanner.nextLine();
+                    System.out.println("Finance : Yes or No");
+                    financeOption = myScanner.nextLine().toLowerCase();
+                    if(financeOption.charAt(0) == 'y'){
+                        isFinanced = true;
+                    }else{
+                        isFinanced = false;
+                    }
+                    for (int i = 0; i < dealerships.inventory.size(); i++) {
+                        System.out.println((i + 1) + ") " + dealerships.inventory.get(i).toString());
+
+                    }
+                    System.out.println("Enter the the vehicle you want to purchase");
+                    int purchaseChoice = myScanner.nextInt();
+                    if (purchaseChoice >= 1 && purchaseChoice <= dealerships.inventory.size()) {
+                        ContractFileManager.saveContract(new SalesContract(date,customerName,customerEmail,dealerships.inventory.get(purchaseChoice -1),isFinanced));
+                        dealerships.removeVehicle(dealerships.inventory.get(purchaseChoice -1));
+                    } else {
+                        System.out.println("Invalid option, returning to dealership screen!");
+                    }
+                    break;
+                case 11:
+                    String date2,customerName2,customerEmail2;
+                    date2 = LocalDate.now().format(dateTimeFormatter);
+                    System.out.println("Name");
+                    customerName2 = myScanner.nextLine();
+                    System.out.println("Email");
+                    customerEmail2 = myScanner.nextLine();
+                    for (int i = 0; i < dealerships.inventory.size(); i++) {
+                        System.out.println((i + 1) + ") " + dealerships.inventory.get(i).toString());
+
+                    }
+                    System.out.println("Enter the the vehicle you want to lease");
+                    int leaseChoice = myScanner.nextInt();
+                    if (leaseChoice >= 1 && leaseChoice <= dealerships.inventory.size()) {
+                        ContractFileManager.saveContract(new LeaseContract(date2,customerName2,customerEmail2,dealerships.inventory.get(leaseChoice -1)));
+                        dealerships.removeVehicle(dealerships.inventory.get(leaseChoice -1));
+                    } else {
+                        System.out.println("Invalid option, returning to dealership screen!");
+                    }
+
                     break;
                 case 99:
                     break;
